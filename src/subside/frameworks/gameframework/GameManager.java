@@ -14,10 +14,12 @@ public class GameManager {
 	}
 	
 	/**
-	 * Don't forget to register the game!
+	 * Games are automaticly registered!
 	 */
-	public void registerGame(Game<?, ?> game){
-		games.add(game);
+	@Deprecated
+	protected void registerGame(Game<?, ?> game){
+		if(!games.contains(game))
+			games.add(game);
 	}
 
 	/**
@@ -46,12 +48,16 @@ public class GameManager {
 	 */
 	public GamePlayer<?> getGamePlayer(Player player){
 		for(Game<?, ?> game : games){
-			for(RunningGame<?,?> rGame : game.getRunningGames()){
-				for(GamePlayer<?> pl : rGame.getAllPlayers()){
-					if(pl.getPlayer().equals(player)){
-						return pl;
+			try {
+				for(RunningGame<?,?> rGame : game.getRunningGames()){
+					for(GamePlayer<?> pl : rGame.getAllPlayers()){
+						if(pl.getPlayer().equals(player)){
+							return pl;
+						}
 					}
 				}
+			} catch(Exception e){
+				e.printStackTrace();
 			}
 		}
 		return null;
@@ -64,8 +70,12 @@ public class GameManager {
 	@Deprecated
 	protected void runTick(){
 		for(Game<?, ?> game : games){
-			for(RunningGame<?,?> rGame : game.getRunningGames()){
-				rGame.tick();
+			try {
+				for(RunningGame<?,?> rGame : game.getRunningGames()){
+					rGame.tick();
+				}
+			} catch(Exception e){
+				e.printStackTrace();
 			}
 		}
 	}
@@ -77,8 +87,12 @@ public class GameManager {
 	@Deprecated
 	public void shutDown(){
 		for(Game<?, ?> game : games){
-			for(RunningGame<?,?> rGame : game.getRunningGames()){
-				rGame.end();
+			try {
+				for(RunningGame<?,?> rGame : game.getRunningGames()){
+					rGame.end();
+				}
+			} catch(Exception e){
+				e.printStackTrace();
 			}
 		}
 	}

@@ -11,13 +11,17 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class EventListener implements Listener {
+class EventListener implements Listener {
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		for (Game<?, ?> game : GameManager.getGameManager().getGames()) {
 			for (RunningGame<?, ?> rGame : game.getRunningGames()) {
-				rGame.leave(e.getPlayer());
+				try {
+					rGame.leave(e.getPlayer());
+				} catch(Exception f){
+					f.printStackTrace();
+				}
 			}
 		}
 	}
@@ -29,30 +33,32 @@ public class EventListener implements Listener {
 			return;
 
 		GamePlayer<?> player = GameManager.getGameManager().getGamePlayer(e.getPlayer());
-		if (!player.getGame().getGame().isCommandAllowed(player, e.getMessage())) {
-			e.setCancelled(true);
+		if(player != null){
+			if (!player.getGame().getGame().isCommandAllowed(player, e.getMessage())) {
+				e.setCancelled(true);
+			}
 		}
 	}
 
 	@EventHandler
 	public void onPlayerChatEvent(AsyncPlayerChatEvent e) {
 		if (Perms.ChatBypass.has(e.getPlayer())) {
-			if (e.getMessage().startsWith("!") && e.getMessage().length() > 1) {
-				e.setMessage(e.getMessage().substring(1));
+			if (e.getMessage().startsWith(ConfigHandler.gChatPrefix)) {
+				e.setMessage(e.getMessage().substring(ConfigHandler.gChatPrefix.length()));
 				return;
 			}
 		}
 
 		GamePlayer<?> player = GameManager.getGameManager().getGamePlayer(e.getPlayer());
 		if (player != null) {
-			if (player.getGame().getGame().hasPrivateChat()) {
+			if (player.getGame().getGame().getHasPrivateChat()) {
 				player.getGame().handleGameChat(player, e.getMessage());
 				e.setCancelled(true);
 				return;
 			}
 		}
 		for (Game<?, ?> game : GameManager.getGameManager().getGames()) {
-			if (game.hasPrivateChat()) {
+			if (game.getHasPrivateChat()) {
 				for (RunningGame<?, ?> rGame : game.getRunningGames()) {
 					for (GamePlayer<?> pl : rGame.getAllPlayers()) {
 						e.getRecipients().remove(pl.getPlayer());
@@ -90,12 +96,16 @@ public class EventListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		for (Game<?, ?> game : GameManager.getGameManager().getGames()) {
-			if (game.shouldHidePlayers()) {
-				for (RunningGame<?, ?> rGame : game.getRunningGames()) {
-					for(GamePlayer<?> player : rGame.getAllPlayers()){
-						player.getPlayer().hidePlayer(e.getPlayer());
+			try {
+				if (game.getHideOtherPlayers()) {
+					for (RunningGame<?, ?> rGame : game.getRunningGames()) {
+						for(GamePlayer<?> player : rGame.getAllPlayers()){
+							player.getPlayer().hidePlayer(e.getPlayer());
+						}
 					}
 				}
+			} catch(Exception f){
+				f.printStackTrace();
 			}
 		}
 	}

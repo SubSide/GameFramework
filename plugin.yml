@@ -3,3 +3,7 @@ version: 0.1
 author: SubSide
 main: subside.frameworks.gameframework.GameFramework
 description: GameFramework for various games
+
+commands:
+  gf:
+    description: Game framework main command

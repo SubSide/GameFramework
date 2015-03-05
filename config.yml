@@ -1,0 +1,6 @@
+# Debug setting (Can be toggled ingame /gf)
+debug: false
+
+# The prefix used to send global messages
+# Players can only send global messages if they have chatbypass
+global-chat-prefix: !

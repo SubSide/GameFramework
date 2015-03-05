@@ -15,6 +15,7 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	
 	private String gameName;
 	
+	@SuppressWarnings("deprecation")
 	public Game(Class<T> runningGameClass, Class<U> gamePlayerClass, Class<?> gameClass){
 		runningGames = new ArrayList<T>();
 		whitelistedCommands = new ArrayList<String>();
@@ -22,6 +23,8 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 		this.gPlayerClass = gamePlayerClass;
 		this.gameClass = gameClass;
 		this.gameName = this.getClass().getSimpleName();
+		
+		GameManager.getGameManager().registerGame(this);
 	}
 
 
@@ -74,7 +77,7 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	 * Sets it to show or hide other players on the server (that are not in the game)
 	 */
 	@SuppressWarnings("deprecation")
-	public final void hideOtherPlayers(boolean bool){
+	public final void setHideOtherPlayers(boolean bool){
 		hideOtherPlayers = bool;
 		for(RunningGame<?,?> game : this.getRunningGames()){
 			for(GamePlayer<?> player : game.getAllPlayers()){
@@ -86,7 +89,7 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	/**
 	 * returns if players should be hidden.
 	 */
-	public final boolean shouldHidePlayers(){
+	public final boolean getHideOtherPlayers(){
 		return hideOtherPlayers;
 	}
 	
@@ -110,8 +113,8 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	 * 
 	 * This NEEDS to be turned on for addWhitelistedcommands to work.
 	 */
-	protected final void disableCommands(){
-		commandsDisabled = true;
+	protected final void setDisableCommands(boolean bool){
+		commandsDisabled = bool;
 	}
 
 	
@@ -125,7 +128,7 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	/**
 	 * Returns if the game haws its own private chatroom
 	 */
-	public final boolean hasPrivateChat(){
+	public final boolean getHasPrivateChat(){
 		return privateChat;
 	}
 

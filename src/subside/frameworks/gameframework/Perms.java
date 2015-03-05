@@ -1,9 +1,9 @@
 package subside.frameworks.gameframework;
 
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 public enum Perms {
-	ChatBypass("chatbypass"), CommandBypass("commandbypass");
+	ChatBypass("chatbypass"), CommandBypass("commandbypass"), SocialSpy("socialspy"), Admin("admin");
 	
 	
 	Perms(String perm){
@@ -11,7 +11,7 @@ public enum Perms {
 	}
 	private String perm;
 	
-	public boolean has(Player player){
+	public boolean has(CommandSender player){
 		return player.hasPermission(perm);
 	}
 	

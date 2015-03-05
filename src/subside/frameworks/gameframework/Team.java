@@ -2,7 +2,7 @@ package subside.frameworks.gameframework;
 
 import java.util.ArrayList;
 
-public class Team {
+class Team {
 	protected final ArrayList<GamePlayer<?>> players;
 	private final TeamManager<?> manager;
 	private String name;

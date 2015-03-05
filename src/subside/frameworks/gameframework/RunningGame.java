@@ -151,11 +151,15 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 	/**
 	 * Tries to remove the game as gracefully as possible.
 	 * if the game is still running it will execute an onEnd
+	 * Then it will leave() all the players still in the game
 	 * Then it will call the onRemove event which can be overwritten.
 	 */
 	@SuppressWarnings("deprecation")
 	public final void remove(){
 		end();
+		for(GamePlayer<?> p : getAllPlayers()){
+			leave(p.getPlayer());
+		}
 		onRemove();
 		getGame().removeGame(this);
 	}
@@ -215,7 +219,7 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 	protected final void showPlayers(Player player){
 		GamePlayer<?> pl = GameManager.getGameManager().getGamePlayer(player);
 		
-		if(this.getGame().shouldHidePlayers()){
+		if(this.getGame().getHideOtherPlayers()){
 			for(GamePlayer<?> pl2 : this.getAllPlayers()){
 				for(Player p : Bukkit.getOnlinePlayers()) pl2.getPlayer().hidePlayer(p);
 				for(GamePlayer<?> pl3 : this.getAllPlayers()){
@@ -260,6 +264,7 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 	
 	/**
 	 * This function is called when the game will be removed.
+	 * Players are automaticly removed BEFORE this function
 	 */
 	public void onRemove(){
 		
@@ -287,6 +292,25 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 	 */
 	public void onPlayerLeave(T player){ }
 
+	/**
+	 * Sends a global message to all the players in this game
+	 */
+	public final void broadcast(String bc){
+		for(GamePlayer<?> player : getAllPlayers()){
+			player.getPlayer().sendMessage(bc);
+		}
+	}
+	
+	
+	/**
+	 * Sends a global message to all the players in this game
+	 */
+	public final void broadcast(String[] bc){
+		for(GamePlayer<?> player : getAllPlayers()){
+			player.getPlayer().sendMessage(bc);
+		}
+	}
+	
 	
 	/**
 	 * Can be overwritten to have your own chat handling
@@ -298,7 +322,7 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 	 * And instead overwrite handleTeamChat
 	 * 
 	 * Make sure to also show the chat to players with chat bypass!
-	 * (Perms.ChatBypass.has(Player))
+	 * (Perms.SocialSpy.has(Player))
 	 */
 	@SuppressWarnings("deprecation")
 	public void handleGameChat(GamePlayer<?> player, String message){
@@ -307,13 +331,15 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 		} else {
 			String msg = ChatColor.DARK_GRAY+"["+ChatColor.GRAY+getGame().getName()+ChatColor.DARK_GRAY+"] "+ChatColor.BLUE+player.getPlayer().getDisplayName()+ChatColor.GRAY+": "+ChatColor.WHITE+message;
 			for(GamePlayer<?> pl : getAllPlayers()){
-				if(Perms.ChatBypass.has(pl.getPlayer()))
+				if(Utils.hasSocialSpy(pl.getPlayer()))
 					continue;
 				
 				pl.getPlayer().sendMessage(msg);
 			}
 			
-			for(Player pl2 : Bukkit.getOnlinePlayers()) pl2.sendMessage(msg);
+			for(Player pl2 : Bukkit.getOnlinePlayers()) 
+				if(Utils.hasSocialSpy(pl2))
+					pl2.sendMessage(msg);
 		}
 	}
 	
@@ -326,6 +352,9 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 	 * 
 	 * team can be null if player is not in a team!
 	 * Which will result in no message at all!
+	 * 
+	 * Make sure to also show the chat to players with chat bypass!
+	 * (Perms.SocialSpy.has(Player))
 	 */
 	@SuppressWarnings("deprecation")
 	public void handleTeamChat(GamePlayer<?> player, Team team, String message){
@@ -334,12 +363,14 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 		
 		String msg = ChatColor.DARK_GRAY+"["+ChatColor.GRAY+team.getName()+ChatColor.DARK_GRAY+"] "+ChatColor.BLUE+player.getPlayer().getDisplayName()+ChatColor.GRAY+": "+message;
 		for(GamePlayer<?> pl : team.getPlayers()){
-			if(Perms.ChatBypass.has(pl.getPlayer()))
+			if(Utils.hasSocialSpy(pl.getPlayer()))
 				continue;
 			
 			pl.getPlayer().sendMessage(msg);
 		}
 		
-		for(Player pl2 : Bukkit.getOnlinePlayers()) pl2.sendMessage(msg);
+		for(Player pl2 : Bukkit.getOnlinePlayers()) 
+			if(Utils.hasSocialSpy(pl2))
+					pl2.sendMessage(msg);
 	}
 }
