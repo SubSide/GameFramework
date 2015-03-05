@@ -13,18 +13,30 @@ public class Team {
 		this.name = name;
 	}
 	
+	/**
+	 * Returns the name of the team
+	 */
 	public String getName(){
 		return name;
 	}
 	
-	public TeamManager<?> getGame(){
+	/**
+	 * Returns the TeamManager
+	 */
+	public TeamManager<?> getManager(){
 		return manager;
 	}
 	
+	/**
+	 * Returns all the players in this team
+	 */
 	public ArrayList<GamePlayer<?>> getPlayers(){
 		return players;
 	}
 	
+	/**
+	 * Returns true if the player is in this team
+	 */
 	public boolean isInTeam(GamePlayer<?> player){
 		return players.contains(player);
 	}

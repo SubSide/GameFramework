@@ -35,14 +35,24 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 		return players;
 	}
 	
+	/**
+	 * Sets the team chat.
+	 * This will make it so chat will only be shown to the same team
+	 */
 	protected final void setTeamChat(boolean bool){
 		teamChat = bool;
 	}
 	
+	/**
+	 * returns if team chat is active or not.
+	 */
 	protected final boolean hasTeamChat(){
 		return teamChat;
 	}
 	
+	/**
+	 * Returns the team manager.
+	 */
 	protected final TeamManager<T> getTeamManager(){
 		return tManager;
 	}
@@ -155,8 +165,8 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 	 * This is called between onJoin/onLeave and PlayerJoinGameEvent/PlayerLeaveGameEvent respectively
 	 * It is used to update the hidePlayers feature
 	 */
-	@SuppressWarnings("deprecation")
-	private final void showPlayers(Player player){
+	@Deprecated
+	protected final void showPlayers(Player player){
 		GamePlayer<?> pl = GameManager.getGameManager().getGamePlayer(player);
 		
 		if(this.getGame().shouldHidePlayers()){

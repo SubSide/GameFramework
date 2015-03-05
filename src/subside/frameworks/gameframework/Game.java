@@ -25,11 +25,20 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	}
 
 
-	
+	/**
+	 * returns the name of the game.
+	 * @return
+	 * the game name
+	 */
 	public final String getName(){
 		return gameName;
 	}
 	
+	/**
+	 * Sets the name of the game
+	 * @param name
+	 * the name of the game
+	 */
 	protected final void setName(String name){
 		this.gameName = name;
 	}
@@ -61,10 +70,22 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 		return true;
 	}
 	
+	/**
+	 * Sets it to show or hide other players on the server (that are not in the game)
+	 */
+	@SuppressWarnings("deprecation")
 	public final void hideOtherPlayers(boolean bool){
 		hideOtherPlayers = bool;
+		for(RunningGame<?,?> game : this.getRunningGames()){
+			for(GamePlayer<?> player : game.getPlayers()){
+				game.showPlayers(player.getPlayer());
+			}
+		}
 	}
 	
+	/**
+	 * returns if players should be hidden.
+	 */
 	public final boolean shouldHidePlayers(){
 		return hideOtherPlayers;
 	}
