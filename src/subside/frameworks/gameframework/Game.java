@@ -1,0 +1,146 @@
+package subside.frameworks.gameframework;
+
+import java.util.ArrayList;
+
+public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>> {
+	private final ArrayList<T> runningGames;
+	private final Class<T> rGameClass;
+	private final Class<U> gPlayerClass;
+	private final Class<?> gameClass;
+	
+	private boolean commandsDisabled = false;
+	private final ArrayList<String> whitelistedCommands;
+	private boolean privateChatroom = false;
+	private boolean hideOtherPlayers = false;
+	
+	private String gameName;
+	
+	public Game(Class<T> runningGameClass, Class<U> gamePlayerClass, Class<?> gameClass){
+		runningGames = new ArrayList<T>();
+		whitelistedCommands = new ArrayList<String>();
+		this.rGameClass = runningGameClass;
+		this.gPlayerClass = gamePlayerClass;
+		this.gameClass = gameClass;
+		this.gameName = this.getClass().getSimpleName();
+	}
+
+
+	
+	public final String getName(){
+		return gameName;
+	}
+	
+	protected final void setName(String name){
+		this.gameName = name;
+	}
+	
+	/**
+	 * Used to deny command usage while in game.
+	 * This function can be overwritten to have an advanced
+	 * control over the commands.
+	 * 
+	 * disableCommands() has to be called for this function is used
+	 * 
+	 * KEEP IN MIND THAT THIS IS AN UNPROCESSED, RAW COMMAND
+	 * So unessesary spaces and such annoyances can occur.
+	 * 
+	 * @param player
+	 * The gameplayer
+	 * @param cmd
+	 * The raw command given by PlayerCommandPreprocessEvent
+	 */
+	@Deprecated
+	public boolean isCommandAllowed(GamePlayer<?> player, String cmd){
+		String cmd2 = cmd.trim().split(" ")[0];
+		if(commandsDisabled){
+			if(whitelistedCommands.contains(cmd2.toLowerCase())){
+				return true;
+			}
+			return false;
+		}
+		return true;
+	}
+	
+	public final void hideOtherPlayers(boolean bool){
+		hideOtherPlayers = bool;
+	}
+	
+	public final boolean shouldHidePlayers(){
+		return hideOtherPlayers;
+	}
+	
+	/**
+	 * Add a whitelisted command.
+	 * This only accepts the command, no arguments
+	 * 
+	 * disableCommands() has to be called before this takes effect
+	 * 
+	 * For more control over commands you should overwrite the isCommandAllowed function.
+	 * Keep in mind that that isCommandAllowed is using a raw command.
+	 * Read more on that in the function itself.
+	 */
+	protected final void addWhitelistedCommand(String cmd){
+		whitelistedCommands.add(cmd.toLowerCase());
+	}
+	
+	/**
+	 * This disables command usage while ingame.
+	 * Keep in mind that NO commands are allowed once this is turned on.
+	 * 
+	 * This NEEDS to be turned on for addWhitelistedcommands to work.
+	 */
+	protected final void disableCommands(){
+		commandsDisabled = true;
+	}
+
+	
+	/**
+	 * This will block all chats going in and out except to the players in that game.
+	 */
+	protected final void setPrivateChat(boolean bool){
+		privateChatroom = bool;
+	}
+	
+	/**
+	 * Returns if the game haws its own private chatroom
+	 */
+	public final boolean hasPrivateChatroom(){
+		return privateChatroom;
+	}
+
+
+	/**
+	 * Use this to create a game.
+	 * game.start() needs to be run to actually make it run.
+	 */
+	public final T createGame(){
+		try {
+			T rGame = (T)rGameClass.getConstructor(gPlayerClass.getClass(), gameClass).newInstance(gPlayerClass, this);
+			runningGames.add(rGame);
+			return rGame;
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * This function should not be used, use game.end() instead.
+	 */
+	@Deprecated
+	public final void removeGame(RunningGame<?, ?> game){
+		runningGames.remove(game);
+	}
+	
+	/**
+	 * Returns all the current games.
+	 * 
+	 * IMPORTANT:
+	 * This also returns the games that are NOT running.
+	 * Make sure that if the game is completely done, to run the remove() function in the game.
+	 */
+	public final ArrayList<T> getRunningGames(){
+		return runningGames;
+	}
+	
+}
