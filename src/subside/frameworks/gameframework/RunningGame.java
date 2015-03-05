@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import subside.frameworks.gameframework.events.GameEndEvent;
@@ -13,6 +14,7 @@ import subside.frameworks.gameframework.exceptions.AlreadyIngameException;
 
 public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>> {
 	private final ArrayList<T> players;
+	private final ArrayList<T> spectators;
 	private final Class<? extends GamePlayer<?>> c;
 	private final U game;
 	private boolean isRunning = false;
@@ -22,6 +24,7 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 	
 	public RunningGame(Class<T> c, U game){
 		players = new ArrayList<T>();
+		spectators = new ArrayList<T>();
 		tManager = new TeamManager<T>(this);
 		this.game = game;
 		this.c = c;
@@ -30,6 +33,39 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 
 	/**
 	 * Get all the players in this game
+	 */
+	public final ArrayList<T> getAllPlayers(){
+		ArrayList<T> ret = new ArrayList<T>();
+		ret.addAll(players);
+		ret.addAll(spectators);
+		return ret;
+	}
+	
+
+	/**
+	 * Move said player to spectators
+	 */
+	public final void moveToSpectator(T player){
+		players.remove(player);
+		player.getPlayer().setGameMode(GameMode.SPECTATOR);
+		if(!spectators.contains(player))
+			spectators.add(player);
+	}
+	
+
+	/**
+	 * Move said player back to players
+	 */
+	public final void moveOutOfSpectator(T player){
+		spectators.remove(player);
+		player.getPlayer().setGameMode(GameMode.SURVIVAL);
+		if(!players.contains(player))
+			players.add(player);
+	}
+
+
+	/**
+	 * Get only the playing players in this game
 	 */
 	public final ArrayList<T> getPlayers(){
 		return players;
@@ -159,6 +195,16 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 				break;
 			}
 		}
+		for(T pl : spectators){
+			if(pl.getPlayer().equals(player)){
+				T pl2 = pl;
+				spectators.remove(pl2);
+				onPlayerLeave(pl2);
+				showPlayers(player);
+				Bukkit.getServer().getPluginManager().callEvent(new PlayerJoinGameEvent(this, pl2));
+				break;
+			}
+		}
 	}
 	
 	/**
@@ -170,9 +216,9 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 		GamePlayer<?> pl = GameManager.getGameManager().getGamePlayer(player);
 		
 		if(this.getGame().shouldHidePlayers()){
-			for(GamePlayer<?> pl2 : this.getPlayers()){
+			for(GamePlayer<?> pl2 : this.getAllPlayers()){
 				for(Player p : Bukkit.getOnlinePlayers()) pl2.getPlayer().hidePlayer(p);
-				for(GamePlayer<?> pl3 : this.getPlayers()){
+				for(GamePlayer<?> pl3 : this.getAllPlayers()){
 					pl2.getPlayer().showPlayer(pl3.getPlayer());
 				}
 			}
@@ -188,6 +234,7 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 	 */
 	@Deprecated
 	protected final void tick(){
+		if(!isRunning()) return;
 		onTick();
 		for(T pl : players){
 			pl.update();
@@ -259,7 +306,7 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?,?>>
 			handleTeamChat(player, tManager.getPlayersTeam(player), message);
 		} else {
 			String msg = ChatColor.DARK_GRAY+"["+ChatColor.GRAY+getGame().getName()+ChatColor.DARK_GRAY+"] "+ChatColor.BLUE+player.getPlayer().getDisplayName()+ChatColor.GRAY+": "+ChatColor.WHITE+message;
-			for(GamePlayer<?> pl : getPlayers()){
+			for(GamePlayer<?> pl : getAllPlayers()){
 				if(Perms.ChatBypass.has(pl.getPlayer()))
 					continue;
 				

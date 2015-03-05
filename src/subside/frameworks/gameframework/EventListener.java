@@ -45,16 +45,16 @@ public class EventListener implements Listener {
 
 		GamePlayer<?> player = GameManager.getGameManager().getGamePlayer(e.getPlayer());
 		if (player != null) {
-			if (player.getGame().getGame().hasPrivateChatroom()) {
+			if (player.getGame().getGame().hasPrivateChat()) {
 				player.getGame().handleGameChat(player, e.getMessage());
 				e.setCancelled(true);
 				return;
 			}
 		}
 		for (Game<?, ?> game : GameManager.getGameManager().getGames()) {
-			if (game.hasPrivateChatroom()) {
+			if (game.hasPrivateChat()) {
 				for (RunningGame<?, ?> rGame : game.getRunningGames()) {
-					for (GamePlayer<?> pl : rGame.getPlayers()) {
+					for (GamePlayer<?> pl : rGame.getAllPlayers()) {
 						e.getRecipients().remove(pl.getPlayer());
 					}
 				}
@@ -92,7 +92,7 @@ public class EventListener implements Listener {
 		for (Game<?, ?> game : GameManager.getGameManager().getGames()) {
 			if (game.shouldHidePlayers()) {
 				for (RunningGame<?, ?> rGame : game.getRunningGames()) {
-					for(GamePlayer<?> player : rGame.getPlayers()){
+					for(GamePlayer<?> player : rGame.getAllPlayers()){
 						player.getPlayer().hidePlayer(e.getPlayer());
 					}
 				}

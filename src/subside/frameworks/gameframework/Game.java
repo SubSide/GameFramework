@@ -10,7 +10,7 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	
 	private boolean commandsDisabled = false;
 	private final ArrayList<String> whitelistedCommands;
-	private boolean privateChatroom = false;
+	private boolean privateChat = false;
 	private boolean hideOtherPlayers = false;
 	
 	private String gameName;
@@ -77,7 +77,7 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	public final void hideOtherPlayers(boolean bool){
 		hideOtherPlayers = bool;
 		for(RunningGame<?,?> game : this.getRunningGames()){
-			for(GamePlayer<?> player : game.getPlayers()){
+			for(GamePlayer<?> player : game.getAllPlayers()){
 				game.showPlayers(player.getPlayer());
 			}
 		}
@@ -119,14 +119,14 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	 * This will block all chats going in and out except to the players in that game.
 	 */
 	protected final void setPrivateChat(boolean bool){
-		privateChatroom = bool;
+		privateChat = bool;
 	}
 	
 	/**
 	 * Returns if the game haws its own private chatroom
 	 */
-	public final boolean hasPrivateChatroom(){
-		return privateChatroom;
+	public final boolean hasPrivateChat(){
+		return privateChat;
 	}
 
 

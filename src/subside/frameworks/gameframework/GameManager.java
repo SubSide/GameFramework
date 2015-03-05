@@ -47,7 +47,7 @@ public class GameManager {
 	public GamePlayer<?> getGamePlayer(Player player){
 		for(Game<?, ?> game : games){
 			for(RunningGame<?,?> rGame : game.getRunningGames()){
-				for(GamePlayer<?> pl : rGame.getPlayers()){
+				for(GamePlayer<?> pl : rGame.getAllPlayers()){
 					if(pl.getPlayer().equals(player)){
 						return pl;
 					}
