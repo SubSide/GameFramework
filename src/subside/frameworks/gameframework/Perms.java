@@ -3,7 +3,7 @@ package subside.frameworks.gameframework;
 import org.bukkit.command.CommandSender;
 
 public enum Perms {
-	ChatBypass("chatbypass"), CommandBypass("commandbypass"), SocialSpy("socialspy"), Admin("admin");
+	ChatBypass("chatbypass"), CommandBypass("commandbypass"), SocialSpy("socialspy"), Admin("admin"), Sign("changesigns");
 	
 	
 	Perms(String perm){

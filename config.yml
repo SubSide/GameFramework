@@ -4,3 +4,12 @@ debug: false
 # The prefix used to send global messages
 # Players can only send global messages if they have chatbypass
 global-chat-prefix: !
+
+# Speed of how fast signs update in ticks
+# 20 = every 1 second
+# 40 = every 2 seconds
+# etc
+sign-update-speed: 20
+
+# This is used for notifications to the user
+chat-prefix: '&8[GF] &9'

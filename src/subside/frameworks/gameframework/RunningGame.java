@@ -182,7 +182,6 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 		}
 		onRemove();
 		getGame().removeGame(this);
-		lobbySign.isRemoved();
 	}
 
 	/**
@@ -190,12 +189,12 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 	 * 
 	 * @throws AlreadyIngameException
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	public final boolean join(Player player) throws AlreadyIngameException, MaxPlayersReachedException {
 		if (GameManager.getGameManager().getGamePlayer(player) != null) {
 			throw new AlreadyIngameException();
 		}
-		if (getAllPlayers().size() >= maxPlayers) {
+		if (getAllPlayers().size() >= maxPlayers && maxPlayers != -1) {
 			throw new MaxPlayersReachedException();
 		}
 
@@ -291,11 +290,18 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 	}
 
 	/**
-	 * Overwrite this to show your own sign I don't recommend changing much to
-	 * it for consistency
+	 * Overwrite this to show your own sign I don't recommend changing much to it for consistency
+	 * You can overwrite getSignInfo to show data on the 3th line, like map name, or game type
 	 */
 	public String[] getSignText(LobbySign sign) {
-		return new String[] { ChatColor.DARK_GRAY + "[" + getGame().getName() + "]", ChatColor.DARK_AQUA + sign.getSignInfo(), ChatColor.GRAY + "" + getAllPlayers().size() + ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + maxPlayers, (getAllPlayers().size() < maxPlayers) ? (ChatColor.DARK_GREEN + "Click to join!") : (ChatColor.DARK_RED + "Full!") };
+		return new String[] { ChatColor.DARK_GRAY + "[" + getGame().getName() + "]", ChatColor.DARK_AQUA + getSignInfo(sign), ChatColor.GRAY + "" + getAllPlayers().size() + ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + maxPlayers, (getAllPlayers().size() < maxPlayers || maxPlayers == -1) ? (ChatColor.DARK_GREEN + "Click to join!") : (ChatColor.DARK_RED + "Full!") };
+	}
+	
+	/**
+	 * This is automatically placed on the 3rd line if getSignText is not overwritten.
+	 */
+	protected String getSignInfo(LobbySign sign){
+		return " ";
 	}
 
 	/**

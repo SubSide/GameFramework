@@ -2,6 +2,8 @@ package subside.frameworks.gameframework;
 
 import java.util.ArrayList;
 
+import org.bukkit.entity.Player;
+
 public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>> {
 	private final ArrayList<T> runningGames;
 	private final Class<T> rGameClass;
@@ -165,6 +167,18 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	 */
 	public final ArrayList<T> getRunningGames(){
 		return runningGames;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public final U getGamePlayer(Player player){
+		for(T rGame : getRunningGames()){
+			for(GamePlayer<?> pl : rGame.getAllPlayers()){
+				if(pl.getPlayer().equals(player)){
+					return (U)pl;
+				}
+			}
+		}
+		return null;
 	}
 	
 }

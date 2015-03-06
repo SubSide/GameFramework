@@ -18,6 +18,7 @@ import subside.frameworks.gameframework.lobby.LobbyManager;
 
 class EventListener implements Listener {
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		for (Game<?, ?> game : GameManager.getGameManager().getGames()) {
@@ -45,6 +46,7 @@ class EventListener implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerChatEvent(AsyncPlayerChatEvent e) {
 		if (Perms.ChatBypass.has(e.getPlayer())) {
@@ -98,6 +100,7 @@ class EventListener implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		for (Game<?, ?> game : GameManager.getGameManager().getGames()) {
@@ -115,12 +118,14 @@ class EventListener implements Listener {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent e){
 		if(e.getClickedBlock() != null){
 			if(e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK){
 				if(e.getClickedBlock().getState() instanceof Sign){
-					LobbyManager.onSignClick((Sign) e.getClickedBlock().getState(), e.getPlayer());
+					if(LobbyManager.onSignClick((Sign) e.getClickedBlock().getState(), e.getPlayer()))
+						e.setCancelled(true);
 				}
 			}
 		}

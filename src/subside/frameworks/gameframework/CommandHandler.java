@@ -1,9 +1,13 @@
 package subside.frameworks.gameframework;
 
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import subside.frameworks.gameframework.lobby.LobbyManager;
 
 class CommandHandler implements CommandExecutor {
 
@@ -16,33 +20,98 @@ class CommandHandler implements CommandExecutor {
 			
 			if (args.length > 0) {
 				if (args[0].equalsIgnoreCase("debug")) {
-					if (Perms.Admin.has(sender)) {
-						ConfigHandler.debug = !ConfigHandler.debug;
-						Utils.sendMessage(sender, "Debugging has been turned " + (ConfigHandler.debug ? "on" : "off"));
-					} else {
-						throw new Exception("You don't have the permissions for this!");
-					}
+					debug(sender, args);
 				} else if(args[0].equalsIgnoreCase("ss") || args[0].equalsIgnoreCase("socialspy")){
-					if(Perms.SocialSpy.has(sender)){
-						if(sender instanceof Player){
-							Utils.setSocialSpy((Player)sender, !Utils.hasSocialSpy((Player)sender));
-							Utils.sendMessage(sender, "Game-socialspy has been turned " + (Utils.hasSocialSpy((Player)sender) ? "on" : "off"));
-						} else {
-							throw new Exception("Can only be executed from in-game!");
-						}
-					} else {
-						throw new Exception("You don't have the permissions for this!");
-					}
+					socialSpy(sender, args);
+				} else if(args[0].equalsIgnoreCase("sign")){
+					sign(sender, args);
 				}
 			} else {
-				Utils.sendMessage(sender, "GameFrameworks commands:");
-				Utils.sendMessage(sender, "/gf debug - toggles framework debugging");
-				Utils.sendMessage(sender, "/gf socialspy - toggles socialspy for games with private game chat");
+				help(sender, args);
 			}
 		} catch (Exception e) {
-			Utils.sendMessage(sender, e.getMessage());
+			Utils.sendCMessage(sender, e.getMessage());
 		}
 
 		return false;
+	}
+	
+	public void debug(CommandSender sender, String[] args) throws Exception {
+		if (Perms.Admin.has(sender)) {
+			ConfigHandler.debug = !ConfigHandler.debug;
+			Utils.sendCMessage(sender, "Debugging has been turned " + (ConfigHandler.debug ? "on" : "off"));
+		} else {
+			throw new Exception("You don't have the permissions for this!");
+		}
+	}
+	
+	public void socialSpy(CommandSender sender, String[] args) throws Exception {
+		if(Perms.SocialSpy.has(sender)){
+			if(sender instanceof Player){
+				Utils.setSocialSpy((Player)sender, !Utils.hasSocialSpy((Player)sender));
+				Utils.sendCMessage(sender, "Game-socialspy has been turned " + (Utils.hasSocialSpy((Player)sender) ? "on" : "off"));
+			} else {
+				throw new Exception("Can only be executed from in-game!");
+			}
+		} else {
+			throw new Exception("You don't have the permissions for this!");
+		}
+	}
+	
+	public void help(CommandSender sender, String[] args){
+		Utils.sendCMessage(sender, "GameFrameworks commands:");
+		Utils.sendCMessage(sender, "/gf debug - toggles framework debugging", false);
+		Utils.sendCMessage(sender, "/gf socialspy - toggles socialspy for games with private game chat", false);
+		Utils.sendCMessage(sender, "/gf sign [game] [data] - creates a sign where you're looking at.", false);
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void sign(CommandSender sender, String[] args) throws Exception {
+		if(Perms.Sign.has(sender)){
+			if(sender instanceof Player){
+				Player player = (Player)sender;
+				if(args.length > 2){
+					Block b = player.getTargetBlock(null, 5);
+					if(b != null){
+						if(b.getState() instanceof Sign){
+							if(LobbyManager.addSign(b.getLocation(), args[1], Utils.getFromArray(args, 2))){
+								Utils.sendCMessage(sender, "Sign created!");
+							} else {
+								Utils.sendCMessage(sender, "This sign is already registered!");
+							}
+							return;
+						}
+					}
+					Utils.sendCMessage(sender, "You must be looking at a sign!");
+				} else if(args.length > 1){
+					if(args[1].equalsIgnoreCase("remove")){
+						Block b = player.getTargetBlock(null, 5);
+						if(b != null){
+							if(b.getState() instanceof Sign){
+								if(LobbyManager.removeSign((Sign)b.getState())){
+									Utils.sendCMessage(sender, "Sign removed!");
+								} else {
+									Utils.sendCMessage(sender, "This is not a valid Lobby Sign!");
+								}
+								return;
+							}
+						}
+						Utils.sendCMessage(sender, "You must be looking at a sign!");
+					} else if(args[1].equalsIgnoreCase("cleanup")){
+						LobbyManager.cleanup();
+						Utils.sendCMessage(sender, "All invalid signs have been removed!");
+						return;
+					}
+				}
+				Utils.sendCMessage(sender, "usage: /gf sign [game] [data]");
+				Utils.sendCMessage(sender, "[game] is the name that the Game has registered for signs", false);
+				Utils.sendCMessage(sender, "[data] is what the game uses to save extra info", false);
+				Utils.sendCMessage(sender, "", false);
+				Utils.sendCMessage(sender, "/gf sign remove - to remove sign", false);
+				Utils.sendCMessage(sender, "Removing a sign will end the game!", false);
+			} else {
+				throw new Exception("This can only be ran from ingame!");
+			}
+		}
 	}
 }

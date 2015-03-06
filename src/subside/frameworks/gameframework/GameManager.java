@@ -26,7 +26,8 @@ public class GameManager {
 	 * Gets all the games registered
 	 * (This are not running games)
 	 */
-	protected ArrayList<Game<?, ?>> getGames(){
+	@Deprecated
+	public ArrayList<Game<?, ?>> getGames(){
 		return games;
 	}
 	
@@ -46,16 +47,14 @@ public class GameManager {
 	 * Get the GamePlayer from a player
 	 * returns null if not in a game
 	 */
+	@Deprecated
 	public GamePlayer<?> getGamePlayer(Player player){
+		GamePlayer<?> gP;
 		for(Game<?, ?> game : games){
 			try {
-				for(RunningGame<?,?> rGame : game.getRunningGames()){
-					for(GamePlayer<?> pl : rGame.getAllPlayers()){
-						if(pl.getPlayer().equals(player)){
-							return pl;
-						}
-					}
-				}
+				gP = game.getGamePlayer(player);
+				if(gP != null)
+					return gP;
 			} catch(Exception e){
 				e.printStackTrace();
 			}
