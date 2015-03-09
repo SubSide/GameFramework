@@ -1,5 +1,6 @@
 package subside.frameworks.gameframework;
 
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
@@ -15,7 +16,8 @@ class CommandHandler implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
 		try {
 			if(!Perms.Admin.has(sender) && !Perms.SocialSpy.has(sender)){
-				throw new Exception("You don't have the permissions for this!");
+				info(sender);
+				return false;
 			}
 			
 			if (args.length > 0) {
@@ -25,6 +27,10 @@ class CommandHandler implements CommandExecutor {
 					socialSpy(sender, args);
 				} else if(args[0].equalsIgnoreCase("sign")){
 					sign(sender, args);
+				} else if(args[0].equalsIgnoreCase("info")){
+					info(sender);
+				} else {
+					help(sender, args);
 				}
 			} else {
 				help(sender, args);
@@ -59,10 +65,21 @@ class CommandHandler implements CommandExecutor {
 	}
 	
 	public void help(CommandSender sender, String[] args){
-		Utils.sendCMessage(sender, "GameFrameworks commands:");
-		Utils.sendCMessage(sender, "/gf debug - toggles framework debugging", false);
-		Utils.sendCMessage(sender, "/gf socialspy - toggles socialspy for games with private game chat", false);
-		Utils.sendCMessage(sender, "/gf sign [game] [data] - creates a sign where you're looking at.", false);
+		Utils.sendCMessage(sender, "");
+		if(Perms.Admin.has(sender))
+			Utils.sendCMessage(sender, "/gf debug - toggles framework debugging.", false);
+		if(Perms.SocialSpy.has(sender))
+			Utils.sendCMessage(sender, "/gf socialspy - toggles game socialspy", false);
+		if(Perms.Sign.has(sender))
+			Utils.sendCMessage(sender, "/gf sign - creates a lobby sign.", false);
+		Utils.sendCMessage(sender, "/gf info", false);
+	}
+	
+	public void info(CommandSender sender){
+		Utils.sendCMessage(sender, "");
+		Utils.sendCMessage(sender, ChatColor.DARK_AQUA+"Version: "+ChatColor.GRAY+GameFramework.version, false);
+		Utils.sendCMessage(sender, ChatColor.DARK_AQUA+"Author: "+ChatColor.GRAY+"SubSide", false);
+		Utils.sendCMessage(sender, ChatColor.GRAY+"https://github.com/SubSide/GameFramework", false);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -103,7 +120,8 @@ class CommandHandler implements CommandExecutor {
 						return;
 					}
 				}
-				Utils.sendCMessage(sender, "usage: /gf sign [game] [data]");
+				Utils.sendCMessage(sender, "");
+				Utils.sendCMessage(sender, "usage: /gf sign [game] [data]", false);
 				Utils.sendCMessage(sender, "[game] is the name that the Game has registered for signs", false);
 				Utils.sendCMessage(sender, "[data] is what the game uses to save extra info", false);
 				Utils.sendCMessage(sender, "", false);

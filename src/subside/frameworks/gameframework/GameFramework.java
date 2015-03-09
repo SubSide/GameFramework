@@ -6,9 +6,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import subside.frameworks.gameframework.lobby.LobbyManager;
 
 public class GameFramework extends JavaPlugin {
+	public static String version;
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onEnable(){
+		version = this.getDescription().getVersion();
 		Bukkit.getServer().getPluginManager().registerEvents(new EventListener(), this);
 		ConfigHandler.readConfig(this.getConfig());
 		getCommand("gf").setExecutor(new CommandHandler());

@@ -1,5 +1,5 @@
 name: GameFramework
-version: 0.1
+version: 0.2.7
 author: SubSide
 main: subside.frameworks.gameframework.GameFramework
 description: GameFramework for various games

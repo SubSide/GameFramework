@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import subside.frameworks.gameframework.lobby.LobbyManager;
 
-class EventListener implements Listener {
+public class EventListener implements Listener {
 
 	@SuppressWarnings("deprecation")
 	@EventHandler

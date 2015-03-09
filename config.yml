@@ -3,7 +3,7 @@ debug: false
 
 # The prefix used to send global messages
 # Players can only send global messages if they have chatbypass
-global-chat-prefix: !
+global-chat-prefix: '!'
 
 # Speed of how fast signs update in ticks
 # 20 = every 1 second

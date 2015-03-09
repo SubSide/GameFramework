@@ -1,13 +1,15 @@
 package subside.frameworks.gameframework;
 
+import java.lang.ref.WeakReference;
+
 import org.bukkit.entity.Player;
 
 public abstract class GamePlayer<T extends RunningGame<?,?>> {
-	private final Player player;
+	private final WeakReference<Player> player;
 	private final T game;
 	
 	public GamePlayer(Player player, T game){
-		this.player = player;
+		this.player = new WeakReference<Player>(player);
 		this.game = game;
 	}
 
@@ -15,7 +17,7 @@ public abstract class GamePlayer<T extends RunningGame<?,?>> {
 	 * Gets the actual Player
 	 */
 	public final Player getPlayer(){
-		return player;
+		return player.get();
 	}
 
 	/**
