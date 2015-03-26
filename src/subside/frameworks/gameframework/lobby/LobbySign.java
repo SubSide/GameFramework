@@ -4,11 +4,11 @@ import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
-import subside.frameworks.gameframework.Game;
-import subside.frameworks.gameframework.RunningGame;
 import subside.frameworks.gameframework.Utils;
 import subside.frameworks.gameframework.exceptions.AlreadyIngameException;
 import subside.frameworks.gameframework.exceptions.MaxPlayersReachedException;
+import subside.frameworks.gameframework.framework.Game;
+import subside.frameworks.gameframework.framework.RunningGame;
 
 public class LobbySign {
 	private final Location loc;

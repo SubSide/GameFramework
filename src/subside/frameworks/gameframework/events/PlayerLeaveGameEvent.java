@@ -1,7 +1,7 @@
 package subside.frameworks.gameframework.events;
 
-import subside.frameworks.gameframework.GamePlayer;
-import subside.frameworks.gameframework.RunningGame;
+import subside.frameworks.gameframework.framework.GamePlayer;
+import subside.frameworks.gameframework.framework.RunningGame;
 
 public class PlayerLeaveGameEvent extends AbstractEvent  {
 	private RunningGame<?,?> game;

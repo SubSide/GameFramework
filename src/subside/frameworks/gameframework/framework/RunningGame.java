@@ -1,4 +1,4 @@
-package subside.frameworks.gameframework;
+package subside.frameworks.gameframework.framework;
 
 import java.util.ArrayList;
 
@@ -7,6 +7,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
+import subside.frameworks.gameframework.GameManager;
+import subside.frameworks.gameframework.Utils;
 import subside.frameworks.gameframework.events.GameEndEvent;
 import subside.frameworks.gameframework.events.GameStartEvent;
 import subside.frameworks.gameframework.events.PlayerJoinGameEvent;
@@ -14,7 +16,7 @@ import subside.frameworks.gameframework.exceptions.AlreadyIngameException;
 import subside.frameworks.gameframework.exceptions.MaxPlayersReachedException;
 import subside.frameworks.gameframework.lobby.LobbySign;
 
-public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>> {
+public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>> {
 	private final ArrayList<T> players;
 	private final ArrayList<T> spectators;
 	private final Class<? extends GamePlayer<?>> c;
@@ -58,8 +60,7 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 	public final void moveToSpectator(T player) {
 		players.remove(player);
 		player.getPlayer().setGameMode(GameMode.SPECTATOR);
-		if (!spectators.contains(player))
-			spectators.add(player);
+		if (!spectators.contains(player)) spectators.add(player);
 	}
 
 	/**
@@ -68,8 +69,7 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 	public final void moveOutOfSpectator(T player) {
 		spectators.remove(player);
 		player.getPlayer().setGameMode(GameMode.SURVIVAL);
-		if (!players.contains(player))
-			players.add(player);
+		if (!players.contains(player)) players.add(player);
 	}
 
 	/**
@@ -97,7 +97,7 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 	/**
 	 * Returns the team manager.
 	 */
-	protected final TeamManager<T> getTeamManager() {
+	public final TeamManager<T> getTeamManager() {
 		return tManager;
 	}
 
@@ -118,10 +118,10 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 	/**
 	 * Is the game created by the lobby manager?
 	 */
-	public final boolean getIsLobbyCreated(){
+	public final boolean getIsLobbyCreated() {
 		return lobbySign != null;
 	}
-	
+
 	/**
 	 * This function is called if the game is created by the lobby
 	 */
@@ -134,15 +134,12 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 	/**
 	 * This should be called to start the game This function does nothing if the
 	 * game is already running.
-	 * 
 	 * This function calls onStart()
-	 * 
 	 * Note: calling this event will send an GameStartEvent. So excessively
 	 * toggling it on and off is not recommended.
 	 */
 	public final void start() {
-		if (isRunning)
-			return;
+		if (isRunning) return;
 		isRunning = true;
 		onStart();
 		Bukkit.getServer().getPluginManager().callEvent(new GameStartEvent(this));
@@ -151,18 +148,14 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 	/**
 	 * This should be called to end the game This function does nothing if the
 	 * game is not running.
-	 * 
 	 * This function calls onEnd()
-	 * 
 	 * Note: calling this event will send an GameEndEvent. So excessively
 	 * toggling it on and off is not recommended.
-	 * 
 	 * IMPORTANT: calling this function DOES NOT remove it! call game.remove()
 	 * for that. If you don't do this this will cause serious issues!
 	 */
 	public final void end() {
-		if (!isRunning)
-			return;
+		if (!isRunning) return;
 		isRunning = false;
 		onEnd();
 		Bukkit.getServer().getPluginManager().callEvent(new GameEndEvent(this));
@@ -186,10 +179,11 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 
 	/**
 	 * This should be called to add players to the game
-	 * 
 	 * @throws AlreadyIngameException
 	 */
-	@SuppressWarnings({ "unchecked", "deprecation" })
+	@SuppressWarnings({
+			"unchecked", "deprecation"
+	})
 	public final boolean join(Player player) throws AlreadyIngameException, MaxPlayersReachedException {
 		if (GameManager.getGameManager().getGamePlayer(player) != null) {
 			throw new AlreadyIngameException();
@@ -209,7 +203,8 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 				players.remove(gPlayer);
 				return false;
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 		return true;
@@ -270,9 +265,8 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 	 * instability in the game!
 	 */
 	@Deprecated
-	protected final void tick() {
-		if (!isRunning())
-			return;
+	public final void tick() {
+		if (!isRunning()) return;
 		onTick();
 		for (T pl : players) {
 			pl.update();
@@ -290,17 +284,25 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 	}
 
 	/**
-	 * Overwrite this to show your own sign I don't recommend changing much to it for consistency
-	 * You can overwrite getSignInfo to show data on the 3th line, like map name, or game type
+	 * Overwrite this to show your own sign I don't recommend changing much to
+	 * it for consistency
+	 * You can overwrite getSignInfo to show data on the 3th line, like map
+	 * name, or game type
 	 */
 	public String[] getSignText(LobbySign sign) {
-		return new String[] { ChatColor.DARK_GRAY + "[" + getGame().getName() + "]", ChatColor.DARK_AQUA + getSignInfo(sign), ChatColor.GRAY + "" + getAllPlayers().size() + ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + maxPlayers, (getAllPlayers().size() < maxPlayers || maxPlayers == -1) ? (ChatColor.DARK_GREEN + "Click to join!") : (ChatColor.DARK_RED + "Full!") };
+		return new String[] {
+				ChatColor.DARK_GRAY + "[" + getGame().getName() + "]",
+				ChatColor.DARK_AQUA + getSignInfo(sign),
+				ChatColor.GRAY + "" + getAllPlayers().size() + ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + maxPlayers,
+				(getAllPlayers().size() < maxPlayers || maxPlayers == -1) ? (ChatColor.DARK_GREEN + "Click to join!") : (ChatColor.DARK_RED + "Full!")
+		};
 	}
-	
+
 	/**
-	 * This is automatically placed on the 3rd line if getSignText is not overwritten.
+	 * This is automatically placed on the 3rd line if getSignText is not
+	 * overwritten.
 	 */
-	protected String getSignInfo(LobbySign sign){
+	protected String getSignInfo(LobbySign sign) {
 		return " ";
 	}
 
@@ -331,8 +333,7 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 	/**
 	 * This function will be called when every tick Should be overwritten
 	 */
-	public void onTick() {
-	}
+	public void onTick() {}
 
 	/**
 	 * @param player
@@ -350,8 +351,7 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 	 *            This will also be called when the player quits the server
 	 *            Should be overwritten
 	 */
-	public void onPlayerLeave(T player) {
-	}
+	public void onPlayerLeave(T player) {}
 
 	/**
 	 * Sends a global message to all the players in this game
@@ -373,12 +373,9 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 
 	/**
 	 * Can be overwritten to have your own chat handling
-	 * 
 	 * privateChatroom needs to be enabled for this!
-	 * 
 	 * Note: Best to be left alone if teams are enabled And instead overwrite
 	 * handleTeamChat
-	 * 
 	 * Make sure to also show the chat to players with chat bypass!
 	 * (Perms.SocialSpy.has(Player))
 	 */
@@ -389,44 +386,36 @@ public abstract class RunningGame<T extends GamePlayer<?>, U extends Game<?, ?>>
 		} else {
 			String msg = ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + getGame().getName() + ChatColor.DARK_GRAY + "] " + ChatColor.BLUE + player.getPlayer().getDisplayName() + ChatColor.GRAY + ": " + ChatColor.WHITE + message;
 			for (GamePlayer<?> pl : getAllPlayers()) {
-				if (Utils.hasSocialSpy(pl.getPlayer()))
-					continue;
+				if (Utils.hasSocialSpy(pl.getPlayer())) continue;
 
 				pl.getPlayer().sendMessage(msg);
 			}
 
 			for (Player pl2 : Bukkit.getOnlinePlayers())
-				if (Utils.hasSocialSpy(pl2))
-					pl2.sendMessage(msg);
+				if (Utils.hasSocialSpy(pl2)) pl2.sendMessage(msg);
 		}
 	}
 
 	/**
 	 * Can be overwritten to have your own team chat handling
-	 * 
 	 * privateChatroom needs to be enabled for this!
-	 * 
 	 * team can be null if player is not in a team! Which will result in no
 	 * message at all!
-	 * 
 	 * Make sure to also show the chat to players with chat bypass!
 	 * (Perms.SocialSpy.has(Player))
 	 */
 	@SuppressWarnings("deprecation")
 	public void handleTeamChat(GamePlayer<?> player, Team team, String message) {
-		if (team == null)
-			return;
+		if (team == null) return;
 
 		String msg = ChatColor.DARK_GRAY + "[" + ChatColor.GRAY + team.getName() + ChatColor.DARK_GRAY + "] " + ChatColor.BLUE + player.getPlayer().getDisplayName() + ChatColor.GRAY + ": " + message;
 		for (GamePlayer<?> pl : team.getPlayers()) {
-			if (Utils.hasSocialSpy(pl.getPlayer()))
-				continue;
+			if (Utils.hasSocialSpy(pl.getPlayer())) continue;
 
 			pl.getPlayer().sendMessage(msg);
 		}
 
 		for (Player pl2 : Bukkit.getOnlinePlayers())
-			if (Utils.hasSocialSpy(pl2))
-				pl2.sendMessage(msg);
+			if (Utils.hasSocialSpy(pl2)) pl2.sendMessage(msg);
 	}
 }

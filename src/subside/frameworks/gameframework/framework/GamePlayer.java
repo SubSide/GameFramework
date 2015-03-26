@@ -1,4 +1,4 @@
-package subside.frameworks.gameframework;
+package subside.frameworks.gameframework.framework;
 
 import java.lang.ref.WeakReference;
 

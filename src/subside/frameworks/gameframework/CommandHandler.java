@@ -72,6 +72,8 @@ class CommandHandler implements CommandExecutor {
 			Utils.sendCMessage(sender, "/gf socialspy - toggles game socialspy", false);
 		if(Perms.Sign.has(sender))
 			Utils.sendCMessage(sender, "/gf sign - creates a lobby sign.", false);
+		if(Perms.Sign.has(sender))
+			Utils.sendCMessage(sender, "/gf cleanup - removes all signs that don't exist.", false);
 		Utils.sendCMessage(sender, "/gf info", false);
 	}
 	

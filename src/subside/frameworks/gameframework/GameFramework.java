@@ -3,6 +3,7 @@ package subside.frameworks.gameframework;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import subside.frameworks.gameframework.framework.Game;
 import subside.frameworks.gameframework.lobby.LobbyManager;
 
 public class GameFramework extends JavaPlugin {

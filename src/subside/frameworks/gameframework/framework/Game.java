@@ -1,8 +1,10 @@
-package subside.frameworks.gameframework;
+package subside.frameworks.gameframework.framework;
 
 import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
+
+import subside.frameworks.gameframework.GameManager;
 
 public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>> {
 	private final ArrayList<T> runningGames;

@@ -14,9 +14,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import subside.frameworks.gameframework.framework.Game;
+import subside.frameworks.gameframework.framework.GamePlayer;
+import subside.frameworks.gameframework.framework.RunningGame;
+import subside.frameworks.gameframework.framework.Team;
 import subside.frameworks.gameframework.lobby.LobbyManager;
 
-public class EventListener implements Listener {
+class EventListener implements Listener {
 
 	@SuppressWarnings("deprecation")
 	@EventHandler

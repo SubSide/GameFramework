@@ -1,8 +1,8 @@
-package subside.frameworks.gameframework;
+package subside.frameworks.gameframework.framework;
 
 import java.util.ArrayList;
 
-class TeamManager <U extends GamePlayer<?>> {
+public class TeamManager <U extends GamePlayer<?>> {
 	private boolean friendlyFire = true;
 	private ArrayList<Team> teams;
 	private RunningGame<?,?> game;

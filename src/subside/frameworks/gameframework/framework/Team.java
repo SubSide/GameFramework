@@ -1,8 +1,8 @@
-package subside.frameworks.gameframework;
+package subside.frameworks.gameframework.framework;
 
 import java.util.ArrayList;
 
-class Team {
+public class Team {
 	protected final ArrayList<GamePlayer<?>> players;
 	private final TeamManager<?> manager;
 	private String name;

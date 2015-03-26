@@ -14,8 +14,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import subside.frameworks.gameframework.Game;
 import subside.frameworks.gameframework.GameFramework;
+import subside.frameworks.gameframework.framework.Game;
 
 public class LobbyManager implements Listener {
 	static final ArrayList<LobbySign> lSigns = new ArrayList<LobbySign>();
@@ -23,6 +23,11 @@ public class LobbyManager implements Listener {
 
 	public static void registerSign(String str, Game<?,?> game) {
 		signToGame.put(str.toLowerCase(), game);
+	}
+	
+	@Deprecated
+	public static void cleanUpSigns(){
+		signToGame.entrySet();
 	}
 	
 	/**

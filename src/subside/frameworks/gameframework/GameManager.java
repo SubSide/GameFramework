@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
 
+import subside.frameworks.gameframework.framework.Game;
+import subside.frameworks.gameframework.framework.GamePlayer;
+import subside.frameworks.gameframework.framework.RunningGame;
+
 public class GameManager {
 	private static GameManager manager;
 
@@ -17,7 +21,7 @@ public class GameManager {
 	 * Games are automaticly registered!
 	 */
 	@Deprecated
-	protected void registerGame(Game<?, ?> game){
+	public void registerGame(Game<?, ?> game){
 		if(!games.contains(game))
 			games.add(game);
 	}
