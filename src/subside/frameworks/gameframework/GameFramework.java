@@ -7,15 +7,14 @@ import subside.frameworks.gameframework.framework.Game;
 import subside.frameworks.gameframework.lobby.LobbyManager;
 
 public class GameFramework extends JavaPlugin {
-	public static String version;
-	@SuppressWarnings("deprecation")
+	private static String VERSION;
 	@Override
 	public void onEnable(){
-		version = this.getDescription().getVersion();
+		VERSION = this.getDescription().getVersion();
 		Bukkit.getServer().getPluginManager().registerEvents(new EventListener(), this);
-		ConfigHandler.readConfig(this.getConfig());
+		new ConfigHandler(this.getConfig());
 		getCommand("gf").setExecutor(new CommandHandler());
-		LobbyManager.loadSigns();
+		new LobbyManager();
 		
 		schedule();
 	}
@@ -24,7 +23,7 @@ public class GameFramework extends JavaPlugin {
 	@Override
 	public void onDisable(){
 		GameManager.getGameManager().shutDown();
-		LobbyManager.saveSigns();
+		LobbyManager.getManager().saveSigns();
 	}
 	
 	public void schedule(){
@@ -45,7 +44,7 @@ public class GameFramework extends JavaPlugin {
 			@SuppressWarnings("deprecation")
 			@Override
 			public void run() {
-				if(!ConfigHandler.debug)
+				if(!ConfigHandler.getConfig().shouldDebug())
 					return;
 				
 				int x = 0;
@@ -64,9 +63,13 @@ public class GameFramework extends JavaPlugin {
 			@SuppressWarnings("deprecation")
 			@Override
 			public void run() {
-				LobbyManager.update();
+				LobbyManager.getManager().update();
 			}
 			
-		}, 20*1, ConfigHandler.signUpdateSpeed);
+		}, 20*1, ConfigHandler.getConfig().getSignUpdateSpeed());
+	}
+	
+	public static String getVersion(){
+		return VERSION;
 	}
 }

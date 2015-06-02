@@ -6,8 +6,6 @@ import org.bukkit.event.HandlerList;
 class AbstractEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
 
-	public AbstractEvent() {}
-
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;

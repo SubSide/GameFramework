@@ -15,7 +15,7 @@ class CommandHandler implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
 		try {
-			if(!Perms.Admin.has(sender) && !Perms.SocialSpy.has(sender)){
+			if(!Perms.ADMIN.has(sender) && !Perms.SOCIALSPY.has(sender)){
 				info(sender);
 				return false;
 			}
@@ -43,16 +43,16 @@ class CommandHandler implements CommandExecutor {
 	}
 	
 	public void debug(CommandSender sender, String[] args) throws Exception {
-		if (Perms.Admin.has(sender)) {
-			ConfigHandler.debug = !ConfigHandler.debug;
-			Utils.sendCMessage(sender, "Debugging has been turned " + (ConfigHandler.debug ? "on" : "off"));
+		if (Perms.ADMIN.has(sender)) {
+			ConfigHandler.getConfig().toggleDebug();
+			Utils.sendCMessage(sender, "Debugging has been turned " + (ConfigHandler.getConfig().shouldDebug() ? "on" : "off"));
 		} else {
 			throw new Exception("You don't have the permissions for this!");
 		}
 	}
 	
 	public void socialSpy(CommandSender sender, String[] args) throws Exception {
-		if(Perms.SocialSpy.has(sender)){
+		if(Perms.SOCIALSPY.has(sender)){
 			if(sender instanceof Player){
 				Utils.setSocialSpy((Player)sender, !Utils.hasSocialSpy((Player)sender));
 				Utils.sendCMessage(sender, "Game-socialspy has been turned " + (Utils.hasSocialSpy((Player)sender) ? "on" : "off"));
@@ -66,34 +66,34 @@ class CommandHandler implements CommandExecutor {
 	
 	public void help(CommandSender sender, String[] args){
 		Utils.sendCMessage(sender, "");
-		if(Perms.Admin.has(sender))
+		if(Perms.ADMIN.has(sender))
 			Utils.sendCMessage(sender, "/gf debug - toggles framework debugging.", false);
-		if(Perms.SocialSpy.has(sender))
+		if(Perms.SOCIALSPY.has(sender))
 			Utils.sendCMessage(sender, "/gf socialspy - toggles game socialspy", false);
-		if(Perms.Sign.has(sender))
+		if(Perms.SIGN.has(sender)){
 			Utils.sendCMessage(sender, "/gf sign - creates a lobby sign.", false);
-		if(Perms.Sign.has(sender))
 			Utils.sendCMessage(sender, "/gf cleanup - removes all signs that don't exist.", false);
+		}
 		Utils.sendCMessage(sender, "/gf info", false);
 	}
 	
 	public void info(CommandSender sender){
 		Utils.sendCMessage(sender, "");
-		Utils.sendCMessage(sender, ChatColor.DARK_AQUA+"Version: "+ChatColor.GRAY+GameFramework.version, false);
+		Utils.sendCMessage(sender, ChatColor.DARK_AQUA+"Version: "+ChatColor.GRAY+GameFramework.getVersion(), false);
 		Utils.sendCMessage(sender, ChatColor.DARK_AQUA+"Author: "+ChatColor.GRAY+"SubSide", false);
 		Utils.sendCMessage(sender, ChatColor.GRAY+"https://github.com/SubSide/GameFramework", false);
 	}
 	
 	@SuppressWarnings("deprecation")
 	public void sign(CommandSender sender, String[] args) throws Exception {
-		if(Perms.Sign.has(sender)){
+		if(Perms.SIGN.has(sender)){
 			if(sender instanceof Player){
 				Player player = (Player)sender;
 				if(args.length > 2){
 					Block b = player.getTargetBlock(null, 5);
 					if(b != null){
 						if(b.getState() instanceof Sign){
-							if(LobbyManager.addSign(b.getLocation(), args[1], Utils.getFromArray(args, 2))){
+							if(LobbyManager.getManager().addSign(b.getLocation(), args[1], Utils.getFromArray(args, 2))){
 								Utils.sendCMessage(sender, "Sign created!");
 							} else {
 								Utils.sendCMessage(sender, "This sign is already registered!");
@@ -107,7 +107,7 @@ class CommandHandler implements CommandExecutor {
 						Block b = player.getTargetBlock(null, 5);
 						if(b != null){
 							if(b.getState() instanceof Sign){
-								if(LobbyManager.removeSign((Sign)b.getState())){
+								if(LobbyManager.getManager().removeSign((Sign)b.getState())){
 									Utils.sendCMessage(sender, "Sign removed!");
 								} else {
 									Utils.sendCMessage(sender, "This is not a valid Lobby Sign!");
@@ -117,7 +117,7 @@ class CommandHandler implements CommandExecutor {
 						}
 						Utils.sendCMessage(sender, "You must be looking at a sign!");
 					} else if(args[1].equalsIgnoreCase("cleanup")){
-						LobbyManager.cleanup();
+						LobbyManager.getManager().cleanup();
 						Utils.sendCMessage(sender, "All invalid signs have been removed!");
 						return;
 					}

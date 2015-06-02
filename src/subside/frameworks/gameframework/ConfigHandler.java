@@ -3,15 +3,41 @@ package subside.frameworks.gameframework;
 import org.bukkit.configuration.file.FileConfiguration;
 
 class ConfigHandler {
-	public static boolean debug = false;
-	public static String gChatPrefix = "!";
-	public static int signUpdateSpeed = 20;
-	public static String chatPrefix = "";
+	private boolean debug;
+	private String globalChatPrefix;
+	private int signUpdateSpeed;
+	private String chatPrefix;
+	private static ConfigHandler cfg;
 	
-	public static void readConfig(FileConfiguration cfg){
+	protected ConfigHandler(FileConfiguration cfg){
 		debug = cfg.getBoolean("debug");
-		gChatPrefix = cfg.getString("global-chat-prefix");
+		globalChatPrefix = cfg.getString("global-chat-prefix");
 		signUpdateSpeed = cfg.getInt("sign-update-speed");
 		chatPrefix = cfg.getString("chat-prefix");
+		ConfigHandler.cfg = this;
+	}
+	
+	public static ConfigHandler getConfig(){
+		return cfg;
+	}
+	
+	public boolean shouldDebug(){
+		return debug;
+	}
+	
+	public void toggleDebug(){
+		debug = !debug;
+	}
+	
+	public String getGlobalChatPrefix(){
+		return globalChatPrefix;
+	}
+	
+	public int getSignUpdateSpeed(){
+		return signUpdateSpeed;
+	}
+	
+	public String getChatPrefix(){
+		return chatPrefix;
 	}
 }

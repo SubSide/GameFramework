@@ -10,7 +10,7 @@ import org.bukkit.metadata.MetadataValue;
 
 public class Utils {
 	public static boolean hasSocialSpy(Player player){
-		if(Perms.SocialSpy.has(player)){
+		if(Perms.SOCIALSPY.has(player)){
 			if(player.hasMetadata("GF_SocialSpy")){
 				List<MetadataValue> list = player.getMetadata("GF_SocialSpy");
 				return list.get(0).asBoolean();
@@ -29,13 +29,13 @@ public class Utils {
 	}
 	
 	public static void setSocialSpy(Player player, boolean bool){
-		if(Perms.SocialSpy.has(player)){
+		if(Perms.SOCIALSPY.has(player)){
 			player.setMetadata("GF_SocialSpy", new FixedMetadataValue(GameFramework.getPlugin(GameFramework.class), bool));
 		}
 	}
 	
 	public static void sendMessage(CommandSender sender, String msg){
-		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', ConfigHandler.chatPrefix)+msg);
+		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', ConfigHandler.getConfig().getChatPrefix())+msg);
 	}
 	
 	public static void sendCMessage(CommandSender player, String msg){

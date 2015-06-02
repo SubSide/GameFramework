@@ -18,15 +18,25 @@ import subside.frameworks.gameframework.GameFramework;
 import subside.frameworks.gameframework.framework.Game;
 
 public class LobbyManager implements Listener {
-	static final ArrayList<LobbySign> lSigns = new ArrayList<LobbySign>();
-	static final HashMap<String, Game<?,?>> signToGame = new HashMap<String, Game<?,?>>();
+	final ArrayList<LobbySign> lobbySigns = new ArrayList<LobbySign>();
+	final HashMap<String, Game<?,?>> signToGame = new HashMap<String, Game<?,?>>();
+	private static LobbyManager manager;
+	
+	public LobbyManager(){
+		manager = this;
+		this.loadSigns();
+	}
+	
+	public static LobbyManager getManager(){
+		return manager;
+	}
 
-	public static void registerSign(String str, Game<?,?> game) {
+	public void registerSign(String str, Game<?,?> game) {
 		signToGame.put(str.toLowerCase(), game);
 	}
 	
 	@Deprecated
-	public static void cleanUpSigns(){
+	public void cleanUpSigns(){
 		signToGame.entrySet();
 	}
 	
@@ -34,7 +44,7 @@ public class LobbyManager implements Listener {
 	 * used to get the game class from the game name used for the sign
 	 */
 	@Deprecated
-	public static Game<?,?> getGameFromSign(String str){
+	public Game<?,?> getGameFromSign(String str){
 		return signToGame.get(str.toLowerCase());
 	}
 
@@ -42,7 +52,7 @@ public class LobbyManager implements Listener {
 	 * Called on interaction with the sign
 	 */
 	@Deprecated
-	public static boolean onSignClick(Sign sign, Player player) {
+	public boolean onSignClick(Sign sign, Player player) {
 		LobbySign lS = getSignAt(sign.getLocation());
 		if(lS != null){
 			lS.onClick(player);
@@ -52,8 +62,8 @@ public class LobbyManager implements Listener {
 	}
 	
 	@Deprecated
-	protected static LobbySign getSignAt(Location location){
-		for (LobbySign lS : lSigns) {
+	protected LobbySign getSignAt(Location location){
+		for (LobbySign lS : lobbySigns) {
 			Location loc = location.clone().subtract(lS.getLocation());
 			if (lS.getLocation().getWorld() == location.getWorld() && loc.getBlockX() == 0 && loc.getBlockY() == 0 && loc.getBlockZ() == 0) {
 				return lS;
@@ -67,8 +77,8 @@ public class LobbyManager implements Listener {
 	 * Configurable in config
 	 */
 	@Deprecated
-	public static void update(){
-		for(LobbySign sign : lSigns){
+	public void update(){
+		for(LobbySign sign : lobbySigns){
 			sign.onSignUpdate();
 		}
 	}
@@ -76,9 +86,9 @@ public class LobbyManager implements Listener {
 	/**
 	 * Add a sign to the list
 	 */
-	public static boolean addSign(Location loc, String gameName, String identifier){
+	public boolean addSign(Location loc, String gameName, String identifier){
 		if(getSignAt(loc) == null){
-			lSigns.add(new LobbySign(loc, gameName, identifier));
+			lobbySigns.add(new LobbySign(loc, gameName, identifier));
 			return true;
 		}
 		return false;
@@ -88,7 +98,7 @@ public class LobbyManager implements Listener {
 	 * Called on onEnable
 	 */
 	@Deprecated
-	public static void loadSigns() {
+	public void loadSigns() {
 		File folder = GameFramework.getPlugin(GameFramework.class).getDataFolder();
 		File file = new File(folder, "signs.yml");
 		if (!file.exists()) {
@@ -118,7 +128,7 @@ public class LobbyManager implements Listener {
 	 * Called on onDisable
 	 */
 	@Deprecated
-	public static void saveSigns(){
+	public void saveSigns(){
 		try {
 			File file = new File(GameFramework.getPlugin(GameFramework.class).getDataFolder(), "signs.yml");
 			
@@ -129,7 +139,7 @@ public class LobbyManager implements Listener {
 			
 			cfg.set("signs", null);
 			int x = 0;
-			for(LobbySign lS : lSigns){
+			for(LobbySign lS : lobbySigns){
 				String prfx = "signs.sign"+x+++".";
 				cfg.set(prfx+"location.world", lS.getLocation().getWorld().getName());
 				cfg.set(prfx+"location.x", lS.getLocation().getBlockX());
@@ -145,25 +155,25 @@ public class LobbyManager implements Listener {
 		}
 	}
 
-	public static boolean removeSign(Sign sign) {
+	public boolean removeSign(Sign sign) {
 		LobbySign lS = getSignAt(sign.getLocation());
 		if(lS != null){
 			lS.remove();
-			lSigns.remove(lS);
+			lobbySigns.remove(lS);
 			return true;
 		}
 		return false;
 	}
 	
-	public static void cleanup(){
-		for(LobbySign lS : lSigns){
+	public void cleanup(){
+		for(LobbySign lS : lobbySigns){
 			try {
 				if(lS.getLocation().getBlock().getState() instanceof Sign){
 					continue;
 				}
 			} catch(Exception e){}
 			lS.remove();
-			lSigns.remove(lS);
+			lobbySigns.remove(lS);
 		}
 	}
 }

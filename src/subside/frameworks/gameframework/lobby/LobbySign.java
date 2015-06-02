@@ -52,7 +52,7 @@ public class LobbySign {
 	@SuppressWarnings("deprecation")
 	protected final void onSignUpdate(){
 		if(game == null){
-			game = LobbyManager.getGameFromSign(gameName);
+			game = LobbyManager.getManager().getGameFromSign(gameName);
 			if(game == null){
 				return;
 			}

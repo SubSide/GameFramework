@@ -39,7 +39,7 @@ class EventListener implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e) {
-		if (Perms.CommandBypass.has(e.getPlayer()))
+		if (Perms.COMMANDBYPASS.has(e.getPlayer()))
 			return;
 
 		GamePlayer<?> player = GameManager.getGameManager().getGamePlayer(e.getPlayer());
@@ -53,9 +53,9 @@ class EventListener implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerChatEvent(AsyncPlayerChatEvent e) {
-		if (Perms.ChatBypass.has(e.getPlayer())) {
-			if (e.getMessage().startsWith(ConfigHandler.gChatPrefix)) {
-				e.setMessage(e.getMessage().substring(ConfigHandler.gChatPrefix.length()));
+		if (Perms.CHATBYPASS.has(e.getPlayer())) {
+			if (e.getMessage().startsWith(ConfigHandler.getConfig().getGlobalChatPrefix())) {
+				e.setMessage(e.getMessage().substring(ConfigHandler.getConfig().getGlobalChatPrefix().length()));
 				return;
 			}
 		}
@@ -128,7 +128,7 @@ class EventListener implements Listener {
 		if(e.getClickedBlock() != null){
 			if(e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK){
 				if(e.getClickedBlock().getState() instanceof Sign){
-					if(LobbyManager.onSignClick((Sign) e.getClickedBlock().getState(), e.getPlayer()))
+					if(LobbyManager.getManager().onSignClick((Sign) e.getClickedBlock().getState(), e.getPlayer()))
 						e.setCancelled(true);
 				}
 			}
