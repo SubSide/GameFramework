@@ -13,22 +13,23 @@ public class TeamManager <U extends GamePlayer<?>> {
 	}
 	
 	/**
-	 * Gets the game this teammanager is for
+	 * @return the game this teammanager is for
 	 */
 	public RunningGame<?,?> getGame(){
 		return game;
 	}
 	
 	/**
-	 * Get all the teams registered
+	 * @return all the teams registered
 	 */
 	public ArrayList<Team> getTeams(){
 		return teams;
 	}
 	
 	/**
-	 * Gets the team the player is on
-	 * returns null if not on team
+	 * @param player the GamePlayer
+	 * @return the team the player is in
+	 *   null if in no team.
 	 */
 	public Team getPlayersTeam(GamePlayer<?> player){
 		for(Team team : teams){
@@ -40,14 +41,15 @@ public class TeamManager <U extends GamePlayer<?>> {
 	}
 	
 	/**
-	 * If set to true, it will automaticly disable damage to each other.
+	 * If set to false, will automatically block all damage between teammates.
+	 * @param bool boolean
 	 */
 	public void setFriendlyFire(boolean bool){
 		friendlyFire = bool;
 	}
 	
 	/**
-	 * Returns if friendly fire is on.
+	 * @return true if friendly fire is on.
 	 */
 	public boolean hasFriendlyFire(){
 		return friendlyFire;

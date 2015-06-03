@@ -31,25 +31,27 @@ public class LobbyManager implements Listener {
 		return manager;
 	}
 
-	public void registerSign(String str, Game<?,?> game) {
-		signToGame.put(str.toLowerCase(), game);
-	}
-	
-	@Deprecated
-	public void cleanUpSigns(){
-		signToGame.entrySet();
+	/**
+	 * @param title title used on the lobby sign
+	 * @param game the Game object
+	 */
+	public void registerSign(String title, Game<?,?> game) {
+		signToGame.put(title.toLowerCase(), game);
 	}
 	
 	/**
-	 * used to get the game class from the game name used for the sign
+	 * @param title lobby title
+	 * @return the Game object
 	 */
 	@Deprecated
-	public Game<?,?> getGameFromSign(String str){
-		return signToGame.get(str.toLowerCase());
+	public Game<?,?> getGameFromSign(String title){
+		return signToGame.get(title.toLowerCase());
 	}
 
 	/**
-	 * Called on interaction with the sign
+	 * @param sign the sign clicked
+	 * @param player the player who clicked
+	 * @return true if it is a lobby sign
 	 */
 	@Deprecated
 	public boolean onSignClick(Sign sign, Player player) {
@@ -61,6 +63,10 @@ public class LobbyManager implements Listener {
 		return false;
 	}
 	
+	/**
+	 * @param location block location
+	 * @return LobbySign at that block (null if there is none)
+	 */
 	@Deprecated
 	protected LobbySign getSignAt(Location location){
 		for (LobbySign lS : lobbySigns) {
@@ -84,7 +90,10 @@ public class LobbyManager implements Listener {
 	}
 	
 	/**
-	 * Add a sign to the list
+	 * @param loc location
+	 * @param gameName the game name
+	 * @param identifier possible extra information for creating a game.
+	 * @return true if succeeded
 	 */
 	public boolean addSign(Location loc, String gameName, String identifier){
 		if(getSignAt(loc) == null){
@@ -155,6 +164,10 @@ public class LobbyManager implements Listener {
 		}
 	}
 
+	/**
+	 * @param sign the sign to be removed
+	 * @return true if removing was successful
+	 */
 	public boolean removeSign(Sign sign) {
 		LobbySign lS = getSignAt(sign.getLocation());
 		if(lS != null){
@@ -165,6 +178,9 @@ public class LobbyManager implements Listener {
 		return false;
 	}
 	
+	/**
+	 * Removes all LobbySigns that do not exist in the world anymore
+	 */
 	public void cleanup(){
 		for(LobbySign lS : lobbySigns){
 			try {

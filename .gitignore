@@ -2,3 +2,7 @@
 .classpath
 .project
 *.prefs
+*.html
+*.gif
+*.css
+doc/package-list

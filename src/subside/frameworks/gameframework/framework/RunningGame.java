@@ -37,7 +37,9 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 	}
 
 	/**
-	 * Get all the players in this game
+	 * Get all players in this game
+	 * This includes players in spectator.
+	 * @return all the players in this game
 	 */
 	public final ArrayList<T> getAllPlayers() {
 		ArrayList<T> ret = new ArrayList<T>();
@@ -49,6 +51,8 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 	/**
 	 * Sets the max players that can join. Automatically denies if it is
 	 * reached. -1 sets it to unlimited
+	 *
+	 * @param maxPlayers max amount of players that can join
 	 */
 	protected final void setMaxPlayers(int maxPlayers) {
 		this.maxPlayers = maxPlayers;
@@ -56,6 +60,8 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 
 	/**
 	 * Move said player to spectators
+	 *
+	 * @param player the player
 	 */
 	public final void moveToSpectator(T player) {
 		players.remove(player);
@@ -65,6 +71,8 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 
 	/**
 	 * Move said player back to players
+	 *
+	 * @param player the player
 	 */
 	public final void moveOutOfSpectator(T player) {
 		spectators.remove(player);
@@ -74,49 +82,52 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 
 	/**
 	 * Get only the playing players in this game
+	 * Does not include players in spectator.
+	 *
+	 * @return List of playing players
 	 */
 	public final ArrayList<T> getPlayers() {
 		return players;
 	}
 
 	/**
-	 * Sets the team chat. This will make it so chat will only be shown to the
-	 * same team
+	 * This makes the player only able to chat to the team he is in.
+	 * @param bool true if teamcheat shoul dbe enabled
 	 */
 	protected final void setTeamChat(boolean bool) {
 		teamChat = bool;
 	}
-
+	
 	/**
-	 * returns if team chat is active or not.
+	 * @return true if private team chat is active or not.
 	 */
 	protected final boolean hasTeamChat() {
 		return teamChat;
 	}
 
 	/**
-	 * Returns the team manager.
+	 * @return the team manager.
 	 */
 	public final TeamManager<T> getTeamManager() {
 		return tManager;
 	}
 
 	/**
-	 * Get the main game class
+	 * @return the main game class
 	 */
 	public final U getGame() {
 		return game;
 	}
 
 	/**
-	 * Is the game running?
+	 * @return true if the game is running
 	 */
 	public final boolean isRunning() {
 		return isRunning;
 	}
 
 	/**
-	 * Is the game created by the lobby manager?
+	 * @return if the game is created by the lobby manager
 	 */
 	public final boolean getIsLobbyCreated() {
 		return lobbySign != null;
@@ -124,6 +135,8 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 
 	/**
 	 * This function is called if the game is created by the lobby
+	 *
+	 * @param sign the lobby sign
 	 */
 	@Deprecated
 	public final void lobbyCreated(LobbySign sign) {
@@ -152,7 +165,7 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 	 * Note: calling this event will send an GameEndEvent. So excessively
 	 * toggling it on and off is not recommended.
 	 * IMPORTANT: calling this function DOES NOT remove it! call game.remove()
-	 * for that. If you don't do this this will cause serious issues!
+	 * for that. If you don't do this this will cause serious issues such as memory leaks!
 	 */
 	public final void end() {
 		if (!isRunning) return;
@@ -176,10 +189,14 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 		onRemove();
 		getGame().removeGame(this);
 	}
-
+	
 	/**
 	 * This should be called to add players to the game
+	 * 
+	 * @param player the player
+	 * @return true if player was able to join.
 	 * @throws AlreadyIngameException
+	 * @throws MaxPlayersReachedException
 	 */
 	@SuppressWarnings({
 			"unchecked", "deprecation"
@@ -212,6 +229,8 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 
 	/**
 	 * This should be called to make the player leave the game
+	 *
+	 * @param player the player
 	 */
 	public final void leave(Player player) {
 		for (T pl : players) {
@@ -240,6 +259,8 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 	 * This is called between onJoin/onLeave and
 	 * PlayerJoinGameEvent/PlayerLeaveGameEvent respectively It is used to
 	 * update the hidePlayers feature
+	 *
+	 * @param player the player
 	 */
 	@Deprecated
 	protected final void showPlayers(Player player) {
@@ -261,7 +282,7 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 	}
 
 	/**
-	 * This is automaticly fired on every tick. Do not use as it can cause
+	 * This is automaticly fired on every tick. Do not use this as it can cause
 	 * instability in the game!
 	 */
 	@Deprecated
@@ -278,6 +299,8 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 	 * better control on what kind of game should be started for example, this
 	 * can be used to load specific maps and such (Also to make sure that a
 	 * certain game is not loaded twice on the same map.)
+	 *
+	 * @param sign the LobbySign which created the game
 	 */
 	public void onLobbyCreated(LobbySign sign) {
 
@@ -288,6 +311,9 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 	 * it for consistency
 	 * You can overwrite getSignInfo to show data on the 3th line, like map
 	 * name, or game type
+	 *
+	 * @param sign the LobbySign
+	 * @return The text shown on the LobbySign
 	 */
 	public String[] getSignText(LobbySign sign) {
 		return new String[] {
@@ -301,22 +327,23 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 	/**
 	 * This is automatically placed on the 3rd line if getSignText is not
 	 * overwritten.
+	 *
+	 * @param sign the LobbySign
+	 * @return the info to show
 	 */
 	protected String getSignInfo(LobbySign sign) {
 		return " ";
 	}
 
 	/**
-	 * @param player
-	 *            Overwrite this as start event
+	 * Overwrite this as start event
 	 */
 	public void onStart() {
 
 	}
 
 	/**
-	 * @param player
-	 *            Overwrite this as end event
+	 * Overwrite this as end event
 	 */
 	public void onEnd() {
 
@@ -336,27 +363,31 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 	public void onTick() {}
 
 	/**
-	 * @param player
-	 *            This function will be called when a player joins the game
-	 *            Should be overwritten should return wether or not the player
-	 *            can actually join.
+	 * This function will be called when a player joins the game
+	 * Can be overwritten, should return wether or not the player
+	 * can actually join.
+	 * 
+	 * @param player The GamePlayer
 	 */
 	public boolean onPlayerJoin(T player) {
 		return true;
 	}
 
 	/**
-	 * @param player
-	 *            This function will be called when a player leaves the game.
-	 *            This will also be called when the player quits the server
-	 *            Should be overwritten
+	 * This function will be called when a player leaves the game.
+	 * This will also be called when the player quits the server
+	 * Can be overwritten
+	 * 
+	 * @param player The GamePlayer
 	 */
 	public void onPlayerLeave(T player) {}
 
 	/**
 	 * Sends a global message to all the players in this game
+	 *
+	 * @param bc the broadcast message
 	 */
-	public final void broadcast(String bc) {
+	public void broadcast(String bc) {
 		for (GamePlayer<?> player : getAllPlayers()) {
 			player.getPlayer().sendMessage(bc);
 		}
@@ -364,8 +395,10 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 
 	/**
 	 * Sends a global message to all the players in this game
+	 * 
+	 * @param bc the broadcast message
 	 */
-	public final void broadcast(String[] bc) {
+	public void broadcast(String[] bc) {
 		for (GamePlayer<?> player : getAllPlayers()) {
 			player.getPlayer().sendMessage(bc);
 		}
@@ -377,7 +410,10 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 	 * Note: Best to be left alone if teams are enabled And instead overwrite
 	 * handleTeamChat
 	 * Make sure to also show the chat to players with chat bypass!
-	 * (Perms.SocialSpy.has(Player))
+	 * (Utils.hasSocialSpy(Player))
+	 *
+	 * @param player the Player who sent the message
+	 * @param message the actual message
 	 */
 	@SuppressWarnings("deprecation")
 	public void handleGameChat(GamePlayer<?> player, String message) {
@@ -402,7 +438,11 @@ public abstract class RunningGame <T extends GamePlayer<?>, U extends Game<?, ?>
 	 * team can be null if player is not in a team! Which will result in no
 	 * message at all!
 	 * Make sure to also show the chat to players with chat bypass!
-	 * (Perms.SocialSpy.has(Player))
+	 * (Utils.hasSocialSpy(Player))
+	 *
+	 * @param player The player sending the message
+	 * @param team The team the player is in
+	 * @param message The actual message
 	 */
 	@SuppressWarnings("deprecation")
 	public void handleTeamChat(GamePlayer<?> player, Team team, String message) {

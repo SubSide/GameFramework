@@ -31,20 +31,14 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 		GameManager.getGameManager().registerGame(this);
 	}
 
-
 	/**
-	 * returns the name of the game.
-	 * @return
-	 * the game name
+	 * @return the game name
 	 */
 	public final String getName(){
 		return gameName;
 	}
-	
 	/**
-	 * Sets the name of the game
-	 * @param name
-	 * the name of the game
+	 * @param the game name
 	 */
 	protected final void setName(String name){
 		this.gameName = name;
@@ -60,10 +54,8 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	 * KEEP IN MIND THAT THIS IS AN UNPROCESSED, RAW COMMAND
 	 * So unessesary spaces and such annoyances can occur.
 	 * 
-	 * @param player
-	 * The gameplayer
-	 * @param cmd
-	 * The raw command given by PlayerCommandPreprocessEvent
+	 * @param player that executed the command
+	 * @param The raw command given by PlayerCommandPreprocessEvent
 	 */
 	@Deprecated
 	public boolean isCommandAllowed(GamePlayer<?> player, String cmd){
@@ -76,9 +68,9 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 		}
 		return true;
 	}
-	
 	/**
-	 * Sets it to show or hide other players on the server (that are not in the game)
+	 * show or hide other players on the server (that are not in the game)
+	 * @param boolean
 	 */
 	@SuppressWarnings("deprecation")
 	public final void setHideOtherPlayers(boolean bool){
@@ -91,7 +83,7 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	}
 	
 	/**
-	 * returns if players should be hidden.
+	 * @return true if players not in the game should be hidden.
 	 */
 	public final boolean getHideOtherPlayers(){
 		return hideOtherPlayers;
@@ -106,6 +98,8 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	 * For more control over commands you should overwrite the isCommandAllowed function.
 	 * Keep in mind that that isCommandAllowed is using a raw command.
 	 * Read more on that in the function itself.
+	 *
+	 * @param command to whitelist
 	 */
 	protected final void addWhitelistedCommand(String cmd){
 		whitelistedCommands.add(cmd.toLowerCase());
@@ -116,6 +110,8 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	 * Keep in mind that NO commands are allowed once this is turned on.
 	 * 
 	 * This NEEDS to be turned on for addWhitelistedcommands to work.
+	 *
+	 * @param boolean
 	 */
 	protected final void setDisableCommands(boolean bool){
 		commandsDisabled = bool;
@@ -124,13 +120,15 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	
 	/**
 	 * This will block all chats going in and out except to the players in that game.
+	 *
+	 * @param boolean
 	 */
 	protected final void setPrivateChat(boolean bool){
 		privateChat = bool;
 	}
 	
 	/**
-	 * Returns if the game haws its own private chatroom
+	 * @return true if the game has its own private chatroom
 	 */
 	public final boolean getHasPrivateChat(){
 		return privateChat;
@@ -140,6 +138,8 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	/**
 	 * Use this to create a game.
 	 * game.start() needs to be run to actually make it run.
+	 *
+	 * @return a RunningGame object
 	 */
 	public final T createGame(){
 		try {
@@ -154,6 +154,8 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	
 	/**
 	 * This function should not be used, use game.end() instead.
+	 *
+	 * @param the RunningGame object
 	 */
 	@Deprecated
 	public final void removeGame(RunningGame<?, ?> game){
@@ -164,13 +166,19 @@ public abstract class Game <T extends RunningGame<?,?>, U extends GamePlayer<?>>
 	 * Returns all the current games.
 	 * 
 	 * IMPORTANT:
-	 * This also returns the games that are NOT running.
+	 * This also returns the games that are NOT running (yet). (Check isRunning())
 	 * Make sure that if the game is completely done, to run the remove() function in the game.
+	 *
+	 * @return a list of running games.
 	 */
 	public final ArrayList<T> getRunningGames(){
 		return runningGames;
 	}
 	
+	/**
+	 * @param player the player
+	 * @return the GamePlayer object
+	 */
 	@SuppressWarnings("unchecked")
 	public final U getGamePlayer(Player player){
 		for(T rGame : getRunningGames()){

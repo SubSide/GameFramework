@@ -10,6 +10,10 @@ import subside.frameworks.gameframework.framework.RunningGame;
 
 public class GameManager {
 	private static GameManager manager;
+	
+	static {
+		manager = new GameManager();
+	}
 
 	private ArrayList<Game<?, ?>> games;
 	
@@ -18,7 +22,8 @@ public class GameManager {
 	}
 	
 	/**
-	 * Games are automaticly registered!
+	 * Games are automatically registered!
+	 * @param game the game
 	 */
 	@Deprecated
 	public void registerGame(Game<?, ?> game){
@@ -27,29 +32,23 @@ public class GameManager {
 	}
 
 	/**
-	 * Gets all the games registered
-	 * (This are not running games)
+	 * @return returns all the registered games.
 	 */
 	@Deprecated
 	public ArrayList<Game<?, ?>> getGames(){
 		return games;
 	}
-	
-	static {
-		manager = new GameManager();
-	}
 
 	/**
-	 * Use this function to get the game manager.
+	 * @return the gamemanager
 	 */
 	public static GameManager getGameManager(){
 		return manager;
 	}
 	
-
 	/**
-	 * Get the GamePlayer from a player
-	 * returns null if not in a game
+	 * @param player the player
+	 * @return the GamePlayer
 	 */
 	@Deprecated
 	public GamePlayer<?> getGamePlayer(Player player){
@@ -65,10 +64,8 @@ public class GameManager {
 		}
 		return null;
 	}
-
 	/**
-	 * This function will send a tick to all the running games.
-	 * This is done automaticly. please leave alone as it can cause instabillity in games.
+	 * The heart of the GameFramework
 	 */
 	@Deprecated
 	protected void runTick(){
@@ -82,9 +79,9 @@ public class GameManager {
 			}
 		}
 	}
-
+	
 	/**
-	 * This function is used to end all the running games.
+	 * This function is called to end all running games.
 	 * Could cause problems if the game plugin is unloaded before this one.
 	 */
 	@Deprecated

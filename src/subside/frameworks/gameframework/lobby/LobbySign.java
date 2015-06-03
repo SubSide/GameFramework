@@ -24,7 +24,7 @@ public class LobbySign {
 	}
 	
 	/**
-	 * Returns a string bound to the sign which games can use to load specific data
+	 * @return a string bound to the sign which games can use to load specific data
 	 * like a map, or game mode etc
 	 */
 	public String getIdentifier(){
@@ -32,14 +32,14 @@ public class LobbySign {
 	}
 	
 	/**
-	 * The location of the sign
+	 * @return The location of the sign
 	 */
 	public Location getLocation(){
 		return loc;
 	}
 	
 	/**
-	 * the name of the game (used to grab the Game class)
+	 * @return the name of the game (used to grab the Game class)
 	 */
 	public String getGameName(){
 		return gameName;
@@ -95,6 +95,8 @@ public class LobbySign {
 	 * Is called on interaction.
 	 * Makes the player join if not in any other game.
 	 * Makes the player leave if already in this specific game.
+	 *
+	 * @param player the player who clicked
 	 */
 	public void onClick(Player player){
 		if(game == null || rGame == null){
@@ -112,6 +114,9 @@ public class LobbySign {
 		}
 	}
 
+	/**
+	 * used to remove the sign
+	 */
 	protected void remove() {
 		rGame.remove();
 		if(loc.getBlock().getState() instanceof Sign){

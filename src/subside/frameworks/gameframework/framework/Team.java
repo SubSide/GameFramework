@@ -14,28 +14,29 @@ public class Team {
 	}
 	
 	/**
-	 * Returns the name of the team
+	 * @return the name of the team
 	 */
 	public String getName(){
 		return name;
 	}
 	
 	/**
-	 * Returns the TeamManager
+	 * @return the TeamManager
 	 */
 	public TeamManager<?> getManager(){
 		return manager;
 	}
 	
 	/**
-	 * Returns all the players in this team
+	 * @return all the players in this team
 	 */
 	public ArrayList<GamePlayer<?>> getPlayers(){
 		return players;
 	}
 	
 	/**
-	 * Returns true if the player is in this team
+	 * @param player the game player
+	 * @return true if the player is in this team
 	 */
 	public boolean isInTeam(GamePlayer<?> player){
 		return players.contains(player);

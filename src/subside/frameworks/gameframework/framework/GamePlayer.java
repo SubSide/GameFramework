@@ -14,14 +14,14 @@ public abstract class GamePlayer<T extends RunningGame<?,?>> {
 	}
 
 	/**
-	 * Gets the actual Player
+	 * @return the actual Player
 	 */
 	public final Player getPlayer(){
 		return player.get();
 	}
 
 	/**
-	 * return the running game
+	 * @return the RunningGame
 	 */
 	public final T getGame(){
 		return game;
