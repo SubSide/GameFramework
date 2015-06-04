@@ -4,31 +4,31 @@ import java.lang.ref.WeakReference;
 
 import org.bukkit.entity.Player;
 
-public abstract class GamePlayer<T extends RunningGame<?,?>> {
-	private final WeakReference<Player> player;
-	private final T game;
-	
-	public GamePlayer(Player player, T game){
-		this.player = new WeakReference<Player>(player);
-		this.game = game;
-	}
+public abstract class GamePlayer <T extends RunningGame<?, ?>> {
+    private final WeakReference<Player> player;
+    private final T game;
 
-	/**
-	 * @return the actual Player
-	 */
-	public final Player getPlayer(){
-		return player.get();
-	}
+    public GamePlayer(Player player, T game) {
+        this.player = new WeakReference<>(player);
+        this.game = game;
+    }
 
-	/**
-	 * @return the RunningGame
-	 */
-	public final T getGame(){
-		return game;
-	}
+    /**
+     * @return the actual Player
+     */
+    public final Player getPlayer() {
+        return player.get();
+    }
 
-	/**
-	 * This function is called every tick
-	 */
-	public abstract void update();
+    /**
+     * @return the RunningGame
+     */
+    public final T getGame() {
+        return game;
+    }
+
+    /**
+     * This function is called every tick
+     */
+    public abstract void update();
 }
